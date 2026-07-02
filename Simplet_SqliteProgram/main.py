@@ -12,13 +12,11 @@ def handle(choice):
             gui.signuppage.signup()
         case "2":
             gui.login.login()
+
         case "3":
-            gui.getallusers.getallusers()
-        case "4":
             gui.searchuser.searchuser()
-        case "5":
-            gui.deleteuser.deleteuser()
-        case "6":
+
+        case "4":
             print("Exiting...")
             return False
         case _:
@@ -40,14 +38,12 @@ while True:
         "Do you want to:\n"
         "1 Sign up\n"
         "2 Log in\n"
-        "3 Get all users\n"
-        "4 Search user\n"
-        "5 Delete user\n"
-        "6 Exit\n"
+        "3 Search user\n"
+        "4 Exit\n"
         "Enter choice: "
     )
 
-    if input_choice not in ["1", "2", "3", "4", "5", "6"]:
+    if input_choice not in ["1", "2", "3", "4"]:
         print("Invalid choice. Try again.")
         continue
 

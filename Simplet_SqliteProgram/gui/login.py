@@ -1,6 +1,8 @@
 import sqlite3
 import gui.updateuser
 import gui.deleteuser
+import gui.getallusers
+import gui.deleteuser
 
 
 def signout():
@@ -16,9 +18,16 @@ def AfterLoginPage(choice):
         case "2":
             print("Delete user 2.")
             gui.deleteuser.deleteuser()  # Call the deleteuser function
+
         case "3":
-            print("Sign out 3.")
+            print("Get all users 3.")
+            gui.getallusers.getallusers()  # Call the getallusers function
+            # Placeholder for get all users functionality
+
+        case "4":
+            print("Sign out 4.")
             signout()  # Call the signout function
+
         case _:
             print("Invalid choice. Please try again.")
 # Placeholder for actual after-login functionality
@@ -45,6 +54,6 @@ def login():
     if result:
         print("Users is logged in!")
         AfterLoginPage(
-            input("Enter your choice (1: Update user, 2: Delete user, 3: Sign out): "))
+            input("Enter your choice (1: Update user, 2: Delete user, 3: Get All users, 4: Sign out ): "))
     else:
         print("Invalid username or password.")
