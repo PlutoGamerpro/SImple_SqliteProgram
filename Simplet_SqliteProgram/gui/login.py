@@ -26,6 +26,7 @@ def AfterLoginPage(choice):
 
         case "4":
             print("Sign out 4.")
+
             signout()  # Call the signout function
 
         case _:
