@@ -10,6 +10,7 @@ def handle(choice):
     match choice:
         case "1":
             gui.signuppage.signup()
+
         case "2":
             gui.login.login()
 

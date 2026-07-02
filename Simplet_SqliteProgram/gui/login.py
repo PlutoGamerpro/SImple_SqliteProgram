@@ -2,7 +2,6 @@ import sqlite3
 import gui.updateuser
 import gui.deleteuser
 import gui.getallusers
-import gui.deleteuser
 
 
 def signout():
@@ -10,27 +9,34 @@ def signout():
     # Placeholder for actual sign-out functionality
 
 
-def AfterLoginPage(choice):
-    match choice:
-        case "1":
-            print("Update user 1.")
-            gui.updateuser.updateuser()  # Call the updateuser function
-        case "2":
-            print("Delete user 2.")
-            gui.deleteuser.deleteuser()  # Call the deleteuser function
+def AfterLoginPage():
+    while True:
+        choice = input(
+            "\n"
+            "After-login menu:\n"
+            "1 Update user\n"
+            "2 Delete user\n"
+            "3 Get all users\n"
+            "4 Sign out\n"
+            "Enter your choice: "
+        )
 
-        case "3":
-            print("Get all users 3.")
-            gui.getallusers.getallusers()  # Call the getallusers function
-            # Placeholder for get all users functionality
-
-        case "4":
-            print("Sign out 4.")
-
-            signout()  # Call the signout function
-
-        case _:
-            print("Invalid choice. Please try again.")
+        match choice:
+            case "1":
+                print("Update user 1.")
+                gui.updateuser.updateuser()  # Call the updateuser function
+            case "2":
+                print("Delete user 2.")
+                gui.deleteuser.deleteuser()  # Call the deleteuser function
+            case "3":
+                print("Get all users 3.")
+                gui.getallusers.getallusers()  # Call the getallusers function
+            case "4":
+                print("Sign out 4.")
+                signout()  # Call the signout function
+                break
+            case _:
+                print("Invalid choice. Please try again.")
 # Placeholder for actual after-login functionality
 
 
@@ -54,7 +60,6 @@ def login():
 
     if result:
         print("Users is logged in!")
-        AfterLoginPage(
-            input("Enter your choice (1: Update user, 2: Delete user, 3: Get All users, 4: Sign out ): "))
+        AfterLoginPage()
     else:
         print("Invalid username or password.")
