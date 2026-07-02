@@ -1,4 +1,5 @@
 import sqlite3
+import gui.user_exists
 
 
 def updateuser():
@@ -15,6 +16,9 @@ def updateuser():
         new_username = input("Enter the new username: ")
         if (len(new_username) < 3):
             print("Username must be at least 3 characters long.")
+
+        elif gui.user_exists.user_exists(new_username):
+            print("Username already exists. Please choose a different username.")
 
         else:
             break

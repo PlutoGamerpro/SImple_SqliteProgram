@@ -1,4 +1,5 @@
 import sqlite3
+import gui.user_exists
 
 
 def signup():
@@ -8,9 +9,13 @@ def signup():
     password = ""
 
     while True:
+
         username = input("Username: ")
-        if (len(username) < 3):
-            print("Username must be at least 3 characters long.")
+        if len(username) < 3:
+            print("Password must be at least 6 characters long.")
+
+        elif gui.user_exists.user_exists(username):
+            print("Username already exists. Please choose a different username.")
 
         else:
             break
