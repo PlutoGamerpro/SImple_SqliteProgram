@@ -3,6 +3,7 @@ import gui.login
 import gui.getallusers
 import gui.deleteuser
 import gui.searchuser
+import gui.updateuser
 
 
 def handle(choice):
@@ -23,6 +24,12 @@ def handle(choice):
         case _:
             print("Invalid choice.")
     return True
+
+
+def IfLogedIn():
+    print("Checking if user is logged in...")
+
+    return False
 
 
 print("Welcome to the School Management System!")
