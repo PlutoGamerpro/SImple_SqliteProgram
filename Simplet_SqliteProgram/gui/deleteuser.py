@@ -11,7 +11,7 @@ def deleteuser():
     cursor = conn.cursor()
 
     cursor.execute("""
-        DELETE FROM users WHERE username = ?
+        DELETE FROM users WHERE username = ? 
     """, (username,))
 
     conn.commit()

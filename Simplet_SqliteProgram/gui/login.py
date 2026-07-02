@@ -2,6 +2,7 @@ import sqlite3
 import gui.updateuser
 import gui.deleteuser
 import gui.getallusers
+import gui.deleteuser
 
 
 def signout():

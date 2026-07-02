@@ -7,6 +7,7 @@ def signup():
     print("Please enter your details to create an account.")
     username = ""
     password = ""
+    role = ""
 
     while True:
 
@@ -27,6 +28,13 @@ def signup():
         else:
             break
 
+    while True:
+        role = input("Role (student/teacher/admin): ")
+        if role not in ["student", "teacher", "admin"]:
+            print("Invalid role. Please enter 'student', 'teacher', or 'admin'.")
+        else:
+            break
+
     conn = sqlite3.connect("school.db")
     cursor = conn.cursor()
 
@@ -34,14 +42,15 @@ def signup():
         CREATE TABLE IF NOT EXISTS users (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         username TEXT UNIQUE,
-        password TEXT
+        password TEXT,
+        role TEXT
         )
         """)
 
     cursor.execute("""
-        INSERT INTO users (username, password)
-        VALUES (?, ?)
-        """, (username, password))
+        INSERT INTO users (username, password, role)
+        VALUES (?, ?, ?)
+        """, (username, password, role))
 
     conn.commit()
     conn.close()
