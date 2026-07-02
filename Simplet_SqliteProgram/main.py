@@ -3,26 +3,46 @@ import gui.login
 import gui.getallusers
 import gui.deleteuser
 import gui.searchuser
+
+
+def handle(choice):
+    match choice:
+        case "1":
+            gui.signuppage.signup()
+        case "2":
+            gui.login.login()
+        case "3":
+            gui.getallusers.getallusers()
+        case "4":
+            gui.searchuser.searchuser()
+        case "5":
+            gui.deleteuser.deleteuser()
+        case "6":
+            print("Exiting...")
+            return False
+        case _:
+            print("Invalid choice.")
+    return True
+
+
 print("Welcome to the School Management System!")
 
-input_choice = input(
-    "Do you want to (1) Sign up or (2) Log in? Get all Users (3) Search user (4) Delete user (5) Exit(6): ")
-
-
-while input_choice not in ["1", "2", "3", "4", "5", "6"]:
-    print("Invalid choice. Please enter 1, 2, 3, 4, 5, or 6.")
+while True:
     input_choice = input(
-        "Do you want to (1) Sign up or (2) Log in? Get all Users (3) Search user (4) Delete user (5) Exit (6): ")
+        "\n"
+        "Do you want to:\n"
+        "1 Sign up\n"
+        "2 Log in\n"
+        "3 Get all users\n"
+        "4 Search user\n"
+        "5 Delete user\n"
+        "6 Exit\n"
+        "Enter choice: "
+    )
 
-if input_choice == "1":
-    gui.signuppage.signup()
-elif input_choice == "2":
-    gui.login.login()
-elif input_choice == "3":
-    gui.getallusers.getallusers()
-elif input_choice == "4":
-    gui.searchuser.searchuser()
-elif input_choice == "5":
-    gui.deleteuser.deleteuser()
-elif input_choice == "6":
-    print("Exiting...")
+    if input_choice not in ["1", "2", "3", "4", "5", "6"]:
+        print("Invalid choice. Try again.")
+        continue
+
+    if not handle(input_choice):
+        break
