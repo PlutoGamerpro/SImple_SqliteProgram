@@ -3,6 +3,14 @@ import gui.searchuser
 import gui.deleteuser
 import gui.signuppage
 import gui.login
+import gui.guitest
+
+
+def test():
+    gui.guitest.login()
+
+
+test()
 
 
 def handle(choice):
