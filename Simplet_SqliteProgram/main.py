@@ -1,9 +1,8 @@
+import gui.updateuser
+import gui.searchuser
+import gui.deleteuser
 import gui.signuppage
 import gui.login
-import gui.getallusers
-import gui.deleteuser
-import gui.searchuser
-import gui.updateuser
 
 
 def handle(choice):
