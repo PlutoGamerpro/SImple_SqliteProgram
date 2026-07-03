@@ -15,9 +15,6 @@ def handle(choice):
             gui.login.login()
 
         case "3":
-            gui.searchuser.searchuser()
-
-        case "4":
             print("Exiting...")
             return False
         case _:
@@ -39,12 +36,11 @@ while True:
         "Do you want to:\n"
         "1 Sign up\n"
         "2 Log in\n"
-        "3 Search user\n"
-        "4 Exit\n"
+        "3 Exit\n"
         "Enter choice: "
     )
 
-    if input_choice not in ["1", "2", "3", "4"]:
+    if input_choice not in ["1", "2", "3"]:
         print("Invalid choice. Try again.")
         continue
 

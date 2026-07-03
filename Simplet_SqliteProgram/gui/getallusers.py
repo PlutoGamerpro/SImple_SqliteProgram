@@ -1,7 +1,10 @@
 import sqlite3
 
 
-def getallusers():
+def getallusers(user):
+    if user["role"] != "admin":
+        print("You do not have permission to view all users.")
+        return
     print("Get all users page")
     print("Fetching all users from the database.")
     conn = sqlite3.connect("school.db")

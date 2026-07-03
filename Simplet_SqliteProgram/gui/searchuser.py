@@ -1,7 +1,7 @@
 import sqlite3
 
 
-def searchuser():
+def searchuser(user):
     print("Search user page")
     print("Searching for a user in the database.")
     conn = sqlite3.connect("school.db")

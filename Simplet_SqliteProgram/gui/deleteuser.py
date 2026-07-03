@@ -1,7 +1,10 @@
 import sqlite3
 
 
-def deleteuser():
+def deleteuser(user):
+    if user["role"] != "admin":
+        print("You do not have permission to delete users.")
+        return
     print("Delete user page")
     print("Deleting a user from the database.")
 
