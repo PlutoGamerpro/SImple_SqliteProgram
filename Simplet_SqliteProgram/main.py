@@ -6,13 +6,6 @@ import gui.login
 import gui.guitest
 
 
-def test():
-    gui.guitest.login()
-
-
-test()
-
-
 def handle(choice):
     match choice:
         case "1":

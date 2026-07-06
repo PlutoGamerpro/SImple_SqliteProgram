@@ -1,89 +1,132 @@
+import tkinter as tk
 import sqlite3
+import hashlib
+
 import gui.updateuser
 import gui.deleteuser
 import gui.getalldata
 import gui.searchuser
-import gui.searchuser
-import gui.ClassesAndGrades
 import gui.ClassesAndGrades
 
 
-import sqlite3
-import hashlib
+# ----------------------------
+# Main Window
+# ----------------------------
+window = tk.Tk()
+window.title("School Login")
+window.geometry("400x500")
+
+current_user = None
+
+
+# ----------------------------
+# Functions
+# ----------------------------
+def clear_window():
+    """Remove all widgets from the window."""
+    for widget in window.winfo_children():
+        widget.destroy()
 
 
 def signout():
-    print("Signing out...")
+    global current_user
+    current_user = None
+    show_login_page()
 
 
-def AfterLoginPage(user):
-    while True:
-        print("\nAfter-login menu:")
+def show_menu(user):
+    clear_window()
 
-        if user["role"] == "admin":
-            print("1 Update user")
-            print("2 Delete user")
-            print("3 Get all users & Classes")
-            print("4 Search users")
-            print("6 Create Class")
-            print("7 Give Grades")
-            print("8 See Grades")
-            print("9 Sign out")
+    tk.Label(
+        window,
+        text=f"Welcome {user['username']}",
+        font=("Arial", 16)
+    ).pack(pady=20)
 
-        print("10 Update user (self)")
-        print("11 Sign out")
+    # Everyone
+    tk.Button(
+        window,
+        text="Update Profile",
+        width=30,
+        command=lambda: gui.updateuser.UpdateUserSelf(user)
+    ).pack(pady=5)
 
-        choice = input("Enter your choice: ")
+    # Admin buttons
+    if user["role"] == "admin":
 
-        match choice:
+        tk.Button(
+            window,
+            text="Update User",
+            width=30,
+            command=lambda: gui.updateuser.updateuser(user)
+        ).pack(pady=5)
 
-            case "1" if user["role"] == "admin":
-                gui.updateuser.updateuser(user)
+        tk.Button(
+            window,
+            text="Delete User",
+            width=30,
+            command=lambda: gui.deleteuser.deleteuser(user)
+        ).pack(pady=5)
 
-            case "2" if user["role"] == "admin":
-                gui.deleteuser.deleteuser(user)
+        tk.Button(
+            window,
+            text="Get All Users",
+            width=30,
+            command=lambda: gui.getalldata.getallusers(user)
+        ).pack(pady=5)
 
-            case "3" if user["role"] == "admin":
-                gui.getalldata.getallusers(user)
-                gui.getalldata.getallclasses(user)
+        tk.Button(
+            window,
+            text="Get All Classes",
+            width=30,
+            command=lambda: gui.getalldata.getallclasses(user)
+        ).pack(pady=5)
 
-            case "4" if user["role"] == "admin":
-                gui.searchuser.searchuser(user)
+        tk.Button(
+            window,
+            text="Search User",
+            width=30,
+            command=lambda: gui.searchuser.searchuser(user)
+        ).pack(pady=5)
 
-            case "6" if user["role"] == "admin":
-                gui.ClassesAndGrades.AddClasses(user)
+        tk.Button(
+            window,
+            text="Create Class",
+            width=30,
+            command=lambda: gui.ClassesAndGrades.AddClasses(user)
+        ).pack(pady=5)
 
-            case "7" if user["role"] == "admin":
-                gui.ClassesAndGrades.Grades(user)
+        tk.Button(
+            window,
+            text="Give Grades",
+            width=30,
+            command=lambda: gui.ClassesAndGrades.Grades(user)
+        ).pack(pady=5)
 
-            case "8" if user["role"] == "admin":
-                gui.ClassesAndGrades.SeeGrades(user)
+        tk.Button(
+            window,
+            text="See Grades",
+            width=30,
+            command=lambda: gui.ClassesAndGrades.SeeGrades(user)
+        ).pack(pady=5)
 
-            case "9" if user["role"] == "admin":
-                print("Signing out...")
-                return
-
-            case "10":
-                gui.updateuser.UpdateUserSelf(user)
-
-            case "11":
-                print("Signing out...")
-                return
-
-            case _:
-                print("Invalid choice.")
+    tk.Button(
+        window,
+        text="Sign Out",
+        width=30,
+        command=signout
+    ).pack(pady=20)
 
 
 def login():
-    print("Login page")
+    global current_user
 
-    username = input("Username: ")
-    password = input("Password: ")
+    username = entry_user.get()
+    password = entry_pass.get()
 
     conn = sqlite3.connect("school.db")
     cursor = conn.cursor()
 
-    # Hent bruger inkl. salt
     cursor.execute("""
         SELECT id, username, password, salt, role
         FROM users
@@ -94,140 +137,60 @@ def login():
     conn.close()
 
     if result is None:
-        print("Invalid username or password.")
+        success_label.config(text="Invalid username or password.", fg="red")
         return
 
     user_id, db_username, db_hash, db_salt, role = result
 
-    # Recreate hash using stored salt
-    new_hash = hashlib.pbkdf2_hmac(
+    password_hash = hashlib.pbkdf2_hmac(
         "sha256",
-        password.encode("utf-8"),
+        password.encode(),
         bytes.fromhex(db_salt),
         100000
     ).hex()
 
-    if new_hash == db_hash:
-        print("User is logged in!")
+    if password_hash != db_hash:
+        success_label.config(text="Invalid username or password.", fg="red")
+        return
 
-        user = {
-            "id": user_id,
-            "username": db_username,
-            "role": role
-        }
+    current_user = {
+        "id": user_id,
+        "username": db_username,
+        "role": role
+    }
 
-        AfterLoginPage(user)
-
-    else:
-        print("Invalid username or password.")
+    show_menu(current_user)
 
 
-""" OLD VERSION THAT WORKS BUT NOT WITH SALT / HACHED PASSOWRDS
-This module handles the login functionality for the School Management System.
-def signout():
-    print("Signing out...")
+def show_login_page():
+    global entry_user, entry_pass, success_label
+
+    clear_window()
+
+    tk.Label(window, text="Login", font=("Arial", 18)).pack(pady=20)
+
+    tk.Label(window, text="Username").pack()
+    entry_user = tk.Entry(window)
+    entry_user.pack()
+
+    tk.Label(window, text="Password").pack()
+    entry_pass = tk.Entry(window, show="*")
+    entry_pass.pack()
+
+    success_label = tk.Label(window, text="")
+    success_label.pack(pady=10)
+
+    tk.Button(
+        window,
+        text="Login",
+        width=20,
+        command=login
+    ).pack(pady=10)
 
 
-def AfterLoginPage(user):
-    while True:
-        print("\nAfter-login menu:")
-        # available for everyone
+# ----------------------------
+# Start Application
+# ----------------------------
+show_login_page()
 
-        if user["role"] == "admin":
-            print("1 Update user")
-            print("2 Delete user")
-            print("3 Get all users & Classes")
-            print("4 Search users")
-            print("6 Create Class")
-            print("7 Give Grades")
-            print("8 See Grades")
-            print("9 Sign out")
-
-        print("10 Update user")
-        print("11 Sign out")
-
-        choice = input("Enter your choice: ")
-
-        match choice:
-            case "1" if user["role"] == "admin":
-                print("Update user")
-                gui.updateuser.updateuser(user)
-
-            case "2" if user["role"] == "admin":
-                print("Delete user")
-                gui.deleteuser.deleteuser(user)
-
-            case "3" if user["role"] == "admin":
-                print("Get all users & Classes")
-                gui.getalldata.getallusers(user)
-                gui.getalldata.getallclasses(user)
-
-            case "4" if user["role"] == "admin":
-                print("Search users")
-                gui.searchuser.searchuser(user)
-
-            case "5" if user["role"] == "admin":
-                print("Signing out...")
-                return False
-
-            case "6" if user["role"] == "admin":
-                print("Classes")
-                gui.ClassesAndGrades.AddClasses(user)
-
-            case "7" if user["role"] == "admin":
-                print("Grades")
-                gui.ClassesAndGrades.Grades(user)
-
-            case "8" if user["role"] == "admin":
-                print("See Grades")
-                gui.ClassesAndGrades.SeeGrades(user)
-
-            case "9" if user["role"] == "admin":
-                print("Signing out...")
-                return False
-
-            case "10" if user["role"] != "admin":
-                print("Update user")
-                gui.updateuser.UpdateUserSelf(user)
-
-            case "11" if user["role"] != "admin":
-                print("Signing out...")
-                return False
-
-            case _:
-                print("Invalid choice. Please try again.")
-
-
-def login():
-    print("Login page")
-    print("Please enter your credentials to log in.")
-
-    username = input("Username: ")
-    password = input("Password: ")
-
-    conn = sqlite3.connect("school.db")
-    cursor = conn.cursor()
-"""
-#  cursor.execute("""
-#     SELECT * FROM users WHERE username = ? AND password = ?
-#  """, (username, password))
-"""
-    result = cursor.fetchone()
-    conn.close()
-
-    if result:
-        print("User is logged in!")
-
-        # build session user object
-        user = {
-            "id": result[0],
-            "username": result[1],
-            "password": result[2],
-            "role": result[3] if len(result) > 3 else "user"
-        }
-
-        AfterLoginPage(user)
-
-    else:
-        print("Invalid username or password.")
-"""
+window.mainloop()
