@@ -18,10 +18,11 @@ window.geometry("400x500")
 
 current_user = None
 
+# ----------------------------
+# Helpers
+# ----------------------------
 
-# ----------------------------
-# Functions
-# ----------------------------
+
 def clear_window():
     """Remove all widgets from the window."""
     for widget in window.winfo_children():
@@ -34,6 +35,9 @@ def signout():
     show_login_page()
 
 
+# ----------------------------
+# UI: MENU PAGE
+# ----------------------------
 def show_menu(user):
     clear_window()
 
@@ -43,7 +47,6 @@ def show_menu(user):
         font=("Arial", 16)
     ).pack(pady=20)
 
-    # Everyone
     tk.Button(
         window,
         text="Update Profile",
@@ -51,7 +54,6 @@ def show_menu(user):
         command=lambda: gui.updateuser.UpdateUserSelf(user)
     ).pack(pady=5)
 
-    # Admin buttons
     if user["role"] == "admin":
 
         tk.Button(
@@ -118,6 +120,9 @@ def show_menu(user):
     ).pack(pady=20)
 
 
+# ----------------------------
+# LOGIN FUNCTION
+# ----------------------------
 def login():
     global current_user
 
@@ -136,7 +141,7 @@ def login():
     result = cursor.fetchone()
     conn.close()
 
-    if result is None:
+    if not result:
         success_label.config(text="Invalid username or password.", fg="red")
         return
 
@@ -162,6 +167,9 @@ def login():
     show_menu(current_user)
 
 
+# ----------------------------
+# LOGIN PAGE
+# ----------------------------
 def show_login_page():
     global entry_user, entry_pass, success_label
 
@@ -189,8 +197,7 @@ def show_login_page():
 
 
 # ----------------------------
-# Start Application
+# START
 # ----------------------------
 show_login_page()
-
 window.mainloop()
