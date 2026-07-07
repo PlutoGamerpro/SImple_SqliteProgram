@@ -1,83 +1,138 @@
+import tkinter as tk
+from tkinter import messagebox
 import sqlite3
 import gui.user_exists
 
 
 def UpdateUserSelf(user):
-    print("Update user page")
+    window = tk.Toplevel()
+    window.title("Update Profile")
+    window.geometry("350x220")
 
-    username = user["username"]
-    while True:
+    tk.Label(window, text="New Username").pack(pady=5)
+    entry_username = tk.Entry(window)
+    entry_username.pack()
 
-        new_username = input("Enter the new username: ")
-        if (len(new_username) < 3):
-            print("Username must be at least 3 characters long.")
+    tk.Label(window, text="New Password").pack(pady=5)
+    entry_password = tk.Entry(window, show="*")
+    entry_password.pack()
 
-        elif gui.user_exists.user_exists(new_username):
-            print("Username already exists. Please choose a different username.")
+    def update():
+        new_username = entry_username.get().strip()
+        new_password = entry_password.get()
 
-        else:
-            break
+        if len(new_username) < 3:
+            messagebox.showerror(
+                "Error",
+                "Username must be at least 3 characters long."
+            )
+            return
 
-    while True:
-        new_password = input("Enter the new password: ")
-        if (len(new_password) < 6):
-            print("Password must be at least 6 characters long.")
+        if (new_username != user["username"] and
+                gui.user_exists.user_exists(new_username)):
+            messagebox.showerror(
+                "Error",
+                "Username already exists."
+            )
+            return
 
-        else:
-            break
-    conn = sqlite3.connect("school.db")
-    cursor = conn.cursor()
+        if len(new_password) < 6:
+            messagebox.showerror(
+                "Error",
+                "Password must be at least 6 characters long."
+            )
+            return
 
-    cursor.execute("""
-        UPDATE users SET username = ?, password = ? WHERE username = ?
-    """, (new_username, new_password, username))
+        conn = sqlite3.connect("school.db")
+        cursor = conn.cursor()
 
-    conn.commit()
-    conn.close()
+        # Replace new_password with your hashed password here
+        cursor.execute("""
+            UPDATE users
+            SET username = ?, password = ?
+            WHERE id = ?
+        """, (new_username, new_password, user["id"]))
 
-    print("User updated.")
+        conn.commit()
+        conn.close()
+
+        user["username"] = new_username
+
+        messagebox.showinfo("Success", "Profile updated.")
+        window.destroy()
+
+    tk.Button(window, text="Update", command=update).pack(pady=15)
 
 
 def updateuser(user):
     if user["role"] != "admin":
-        print("You do not have permission to update users.")
+        messagebox.showerror(
+            "Permission Denied",
+            "You do not have permission to update users."
+        )
         return
-    print("Update user page")
-    print("Updating a user's information in the database.")
 
-    username = input("Enter the username of the user to update: ")
+    window = tk.Toplevel()
+    window.title("Update User")
+    window.geometry("350x300")
 
-    new_username = ""
-    new_password = ""
+    tk.Label(window, text="Username to Update").pack(pady=5)
+    entry_old = tk.Entry(window)
+    entry_old.pack()
 
-    while True:
+    tk.Label(window, text="New Username").pack(pady=5)
+    entry_new = tk.Entry(window)
+    entry_new.pack()
 
-        new_username = input("Enter the new username: ")
-        if (len(new_username) < 3):
-            print("Username must be at least 3 characters long.")
+    tk.Label(window, text="New Password").pack(pady=5)
+    entry_pass = tk.Entry(window, show="*")
+    entry_pass.pack()
 
-        elif gui.user_exists.user_exists(new_username):
-            print("Username already exists. Please choose a different username.")
+    def update():
+        old_username = entry_old.get().strip()
+        new_username = entry_new.get().strip()
+        new_password = entry_pass.get()
 
+        if len(new_username) < 3:
+            messagebox.showerror(
+                "Error",
+                "Username must be at least 3 characters long."
+            )
+            return
+
+        if (new_username != old_username and
+                gui.user_exists.user_exists(new_username)):
+            messagebox.showerror(
+                "Error",
+                "Username already exists."
+            )
+            return
+
+        if len(new_password) < 6:
+            messagebox.showerror(
+                "Error",
+                "Password must be at least 6 characters long."
+            )
+            return
+
+        conn = sqlite3.connect("school.db")
+        cursor = conn.cursor()
+
+        # Replace new_password with your hashed password here
+        cursor.execute("""
+            UPDATE users
+            SET username = ?, password = ?
+            WHERE username = ?
+        """, (new_username, new_password, old_username))
+
+        conn.commit()
+
+        if cursor.rowcount == 0:
+            messagebox.showinfo("Result", "User not found.")
         else:
-            break
+            messagebox.showinfo("Success", "User updated.")
 
-    while True:
-        new_password = input("Enter the new password: ")
-        if (len(new_password) < 6):
-            print("Password must be at least 6 characters long.")
+        conn.close()
+        window.destroy()
 
-        else:
-            break
-
-    conn = sqlite3.connect("school.db")
-    cursor = conn.cursor()
-
-    cursor.execute("""
-        UPDATE users SET username = ?, password = ? WHERE username = ?
-    """, (new_username, new_password, username))
-
-    conn.commit()
-    conn.close()
-
-    print("User updated (if it existed).")
+    tk.Button(window, text="Update User", command=update).pack(pady=15)

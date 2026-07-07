@@ -31,7 +31,7 @@ def getallclasses(user):
     conn = sqlite3.connect("school.db")
     cursor = conn.cursor()
 
-    cursor.execute("SELECT id, class_name FROM classes")
+    cursor.execute("SELECT id, name FROM classes")
     classes = cursor.fetchall()
 
     conn.close()
